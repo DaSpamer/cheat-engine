@@ -930,7 +930,6 @@ var sp: pchar;
 
     modinfo: PModInfo;
 begin
-
   try
     try
       c:=getConnection;
@@ -1030,26 +1029,26 @@ begin
 
         end;
 
+        Symcleanup(thisprocesshandle);
         SymbolsLoaded:=SymInitialize(thisprocesshandle, sp, true);
 
-        if symbolsloaded=false then
-          SymbolsLoaded:=SymInitialize(thisprocesshandle, sp, false);
-
+        //if symbolsloaded=false then
+        //  SymbolsLoaded:=SymInitialize(thisprocesshandle, sp, false);
+        // symbolsloaded:= false;
+        //if (1 = 1) then
+         //  exit;
         if symbolsloaded then
         begin
           symsetoptions(symgetoptions or SYMOPT_CASE_INSENSITIVE);
           symsetsearchpath(processhandle,pchar(searchpath));
-
           if kernelsymbols then LoadDriverSymbols;
 
           LoadDLLSymbols;
-
           //enumerate the basic data from the symbols
           enumeratedModules:=0;
           SymEnumerateModules64(thisprocesshandle, @EM, self );
 
           apisymbolsloaded:=true;
-
 
 
           if owner.dotNetDataCollector.Attached then
@@ -1072,7 +1071,7 @@ begin
           EnumerateExtendedDebugSymbols;
 
           Symcleanup(thisprocesshandle);
-
+          Symcleanup(thisprocesshandle);
         end
         else
         {$ENDIF}
@@ -1488,6 +1487,7 @@ begin
         symbolloaderthread.searchpath:=searchpath;
         symbolloaderthread.symbollist:=symbollist;
         symbolloaderthread.start;
+        //raise symexception.Create('Stopped');
       finally
         symbolloadervalid.EndWrite;
       end;

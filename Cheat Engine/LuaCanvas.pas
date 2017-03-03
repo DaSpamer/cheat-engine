@@ -8,15 +8,14 @@ This unit will be used to register TCanvas class methods to lua
 interface
 
 uses
-  Classes, SysUtils, Graphics,lua, lualib, lauxlib, LuaHandler, fpcanvas, LCLType, LCLIntf;
-
+  Classes, SysUtils, Graphics,lua, lualib, lauxlib, LuaHandler, fpcanvas, LCLType, LCLIntf, GraphType;
+  //FPImage, IntfGraphics, GraphType;
 procedure initializeLuaCanvas;
 procedure drawWithMask(DestCanvas:TCanvas; Dx,Dy,Dw,Dh:integer; graph:TRasterImage; Sx,Sy,Sw,Sh:integer);
 
 implementation
 
 uses luaclass, luaobject;
-
 
 
 function canvas_clear(L: PLua_State): integer; cdecl;
@@ -238,17 +237,19 @@ function canvas_floodFill(L: PLua_State): integer; cdecl;
 var
   canvas: TCanvas;
   x,y: integer;
-  fill: integer;
   color: TColor;
+  fill: integer;
 begin
   result:=0;
   canvas:=luaclass_getClassObject(L);
   if lua_gettop(L)>=2 then
   begin
-    x:=lua_tointeger(L, -2);
-    y:=lua_tointeger(L, -1);
-
-    TFPCustomCanvas(canvas).floodfill(x,y);
+    x:=lua_tointeger(L, 1);
+    y:=lua_tointeger(L, 2);
+    color:=lua_tointeger(L,3);
+    fill:=lua_tointeger(L,4);
+    //TFPCustomCanvas(canvas).floodfill(x,y);
+    canvas.FloodFill(x, y, color, TGraphicsFillStyle(fill));
   end;
 end;
 
